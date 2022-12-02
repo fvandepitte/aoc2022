@@ -5,6 +5,13 @@ module Lib
 import System.Environment (getArgs)
 
 data HandType = Rock | Paper | Scissors deriving (Eq)
+instance Ord HandType where
+    Rock < Paper     = True
+    Rock < Scissors  = False
+    Paper < Scissors = True
+    Paper < Rock     = False    
+    Scissors < Rock  = True
+    Scissors < Paper = False
 
 someFunc :: IO ()
 someFunc = do
@@ -38,17 +45,11 @@ parseHand c
     | c == 'B' || c == 'X' = Paper
     | c == 'C' || c == 'Z' = Scissors
 
--- A Rock, B Paper, C Scissors
--- X Rock, Y Paper, Z Scissors
--- Lost 0, Draw 3, Win 6
 calculateWinner :: HandType -> HandType -> Integer
-calculateWinner Rock Paper      = 6 
-calculateWinner Rock Scissors   = 0 
-calculateWinner Paper Scissors  = 6
-calculateWinner Paper Rock      = 0
-calculateWinner Scissors Rock   = 6
-calculateWinner Scissors Paper  = 0 
-calculateWinner _ _ = 3
+calculateWinner h1 h2 
+    | h1 == h2  = 3
+    | h1 < h2   = 6
+    | otherwise = 0
 
 calculateOutCome :: HandType -> Char -> HandType
 calculateOutCome h 'Y'        = h
