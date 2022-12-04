@@ -14,8 +14,8 @@ someFunc = do
     p2Solution <- solve part2 $ head args
     putStrLn ("Part 2: " ++ show p2Solution)
 
-solve :: ([((Int, Int), (Int, Int))] -> b) -> FilePath -> IO b
-solve fn = fmap fn . getInput
+solve :: (((Int, Int), (Int, Int)) -> Bool) -> FilePath -> IO Int
+solve fn = fmap (length . filter id . map fn) . getInput
 
 getInput :: FilePath -> IO [((Int, Int), (Int, Int))]
 getInput = fmap (map parseLine . lines) . readFile
@@ -24,16 +24,10 @@ parseLine :: String -> ((Int, Int), (Int, Int))
 parseLine = toTuple . map (toTuple . map read . splitOn "-") . splitOn ","
     where toTuple [a, b] = (a,b)
 
-part1 :: [((Int, Int), (Int, Int))] -> Int
-part1 = length . filter id . map overlaps
+part1 :: ((Int, Int), (Int, Int)) -> Bool
+part1 x = overlaps x || overlaps (swap x)
+    where overlaps ((a,b),(c,d)) =  a <= c && b >= d
 
-part2 :: [((Int, Int), (Int, Int))] -> Int
-part2 = length . filter id . map overlaps2
-
-overlaps :: ((Int, Int), (Int, Int)) -> Bool
-overlaps x = overlaps' x || overlaps' (swap x)
-    where overlaps' ((a,b),(c,d)) =  a <= c && b >= d
-
-overlaps2 :: ((Int, Int), (Int, Int)) -> Bool
-overlaps2 x = overlaps2' x || overlaps2' (swap x)
-    where overlaps2' ((a,b),(c,d)) = a <= c && c <= b || a <= d && d <= b 
+part2 :: ((Int, Int), (Int, Int)) -> Bool
+part2 x = overlaps x || overlaps (swap x)
+    where overlaps ((a,b),(c,d)) = a <= c && c <= b || a <= d && d <= b 
