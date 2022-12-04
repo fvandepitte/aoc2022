@@ -4,6 +4,7 @@ module Lib
 
 import System.Environment (getArgs)
 import Data.List.Split (splitOn)
+import Data.Tuple (swap)
 
 someFunc :: IO ()
 someFunc = do
@@ -24,21 +25,15 @@ parseLine = toTuple . map (toTuple . map read . splitOn "-") . splitOn ","
     where toTuple [a, b] = (a,b)
 
 part1 :: [((Int, Int), (Int, Int))] -> Int
-part1 = sum . map countOverlap
+part1 = length . filter id . map overlaps
 
 part2 :: [((Int, Int), (Int, Int))] -> Int
-part2 = sum . map countOverlap2
+part2 = length . filter id . map overlaps2
 
-countOverlap :: ((Int, Int), (Int, Int)) -> Int
-countOverlap ((a,b),(c,d))
-    | a <= c && b >= d = 1
-    | c <= a && d >= b = 1
-    | otherwise        = 0
+overlaps :: ((Int, Int), (Int, Int)) -> Bool
+overlaps x = overlaps' x || overlaps' (swap x)
+    where overlaps' ((a,b),(c,d)) =  a <= c && b >= d
 
-countOverlap2 :: ((Int, Int), (Int, Int)) -> Int
-countOverlap2 ((a,b),(c,d))
-    | a <= c && c <= b = 1
-    | a <= d && d <= b = 1
-    | c <= a && a <= d = 1
-    | c <= b && b <= d = 1
-    | otherwise        = 0
+overlaps2 :: ((Int, Int), (Int, Int)) -> Bool
+overlaps2 x = overlaps2' x || overlaps2' (swap x)
+    where overlaps2' ((a,b),(c,d)) = a <= c && c <= b || a <= d && d <= b 
