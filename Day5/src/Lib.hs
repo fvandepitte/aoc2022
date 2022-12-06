@@ -57,12 +57,16 @@ moveInList f t xss
     | Just (x, xss') <- popInList xss f = pushInList xss' t x
     | otherwise                         = xss
 
-executeInstructionLine :: [[a]] -> (Int, Int, Int) ->  [[a]]
+executeInstructionLine :: [[a]] -> (Int, Int, Int) -> [[a]]
 executeInstructionLine xss (n, f, t) = (iterate (moveInList f t) xss) !! n
 
-executeBulkInstructionLine :: [[a]] -> (Int, Int, Int) ->  [[a]]
+executeBulkInstructionLine :: [[a]] -> (Int, Int, Int) -> [[a]]
 executeBulkInstructionLine xss (n, f, t)
-    | (y, x:xs) <- splitAt (f - 1) xss, (z, zs) <- splitAt n x, xss' <- y ++ (zs:xs), (a, b:c) <- splitAt (t - 1) xss' = a ++ ((z ++ b):c)
+    | (y, x:xs) <- splitAt (f - 1) xss, -- pick the stack to move
+      (z, zs) <- splitAt n x, -- pick the items to move
+      xss' <- y ++ (zs:xs), -- recreate stack without to move items
+      (a, b:c) <- splitAt (t - 1) xss' -- pick the stack to put
+        = a ++ ((z ++ b):c) -- bring it all toghether
 
 pop :: [a] -> Maybe (a, [a])
 pop [a]    = Just (a, [])
