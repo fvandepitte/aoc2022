@@ -64,9 +64,6 @@ executeBulkInstructionLine :: [[a]] -> (Int, Int, Int) ->  [[a]]
 executeBulkInstructionLine xss (n, f, t)
     | (y, x:xs) <- splitAt (f - 1) xss, (z, zs) <- splitAt n x, xss' <- y ++ (zs:xs), (a, b:c) <- splitAt (t - 1) xss' = a ++ ((z ++ b):c)
 
-push :: [a] -> a -> [a]
-push xs x = (x:xs)
-
 pop :: [a] -> Maybe (a, [a])
 pop [a]    = Just (a, [])
 pop (a:as) = Just (a, as)
