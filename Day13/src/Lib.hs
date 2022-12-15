@@ -62,8 +62,14 @@ part1 :: [(Pattern, Pattern)] -> Int
 part1 = sum . map (+1) . elemIndices (LT) . map (uncurry isRightOrder)
 
 part2 :: [(Pattern, Pattern)] -> Int
-part2 = calculateKey . sortBy isRightOrder . concat . map unpair
+part2 = calculateKey . sortBy isRightOrder . addDividers . concat . map unpair
 
+addDividers :: [Pattern] -> [Pattern]
+addDividers xs = dividerOne:dividerTwo:xs
+
+unpair :: (Pattern, Pattern) -> [Pattern]
 unpair (a, b) = [a, b]
-          calculateKey xs 
-            | Just one <- elemIndex dividerOne xs, Just two <- elemIndex dividerTwo xs = one * two
+
+calculateKey :: [Pattern] -> Int
+calculateKey xs 
+            | Just one <- elemIndex dividerOne xs, Just two <- elemIndex dividerTwo xs = (one + 1) * (two + 1)
