@@ -8,7 +8,7 @@ import Data.List.Split (splitOn)
 import System.Environment (getArgs)
 import qualified Data.Char as Char
 
-type Item = Int
+type Item = Integer
 type Operation = (Item -> Item)
 type Test = (Item -> Bool)
 type Inspection = (Monkey -> Item -> Item)
@@ -31,8 +31,7 @@ someFunc = do
     input <- getInput $ head args
     let round0 = Round input (map startingItems input) []
     print $ run 20 round0 inspect
-    print $ run 1000 round0 inspect'
-
+    print $ run 10000 round0 inspect'
 
 getInput :: FilePath -> IO [Monkey]
 getInput = fmap (map parseMonkey . splitOn [""] . lines) . readFile
